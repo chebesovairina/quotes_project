@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Случайные цитаты{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 2rem;
+        }
+        .quote-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .quote-text {
+            font-size: 1.5rem;
+            font-style: italic;
+            color: #333;
+            line-height: 1.6;
+        }
+        .quote-source {
+            font-size: 1.1rem;
+            color: #666;
+            margin-top: 1rem;
+            text-align: right;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        .votes {
+            display: flex;
+            gap: 1rem;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn-like {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-dislike {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn-refresh {
+            background-color: #2196F3;
+            color: white;
+        }
+        .nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .nav a {
+            color: #2c3e50;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid #2c3e50;
+            border-radius: 4px;
+        }
+        .nav a:hover {
+            background-color: #2c3e50;
+            color: white;
+        }
+        .messages {
+            margin: 1rem 0;
+        }
+        .message {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎭 Случайные цитаты</h1>
+    </div>
+
+    <div class="nav">
+        <a href="{% url 'random_quote' %}">Главная</a>
+        <a href="{% url 'add_quote' %}">Добавить цитату</a>
+        <a href="{% url 'popular_quotes' %}">Популярные</a>
+        <a href="{% url 'search_quotes' %}">Поиск</a>  <!-- Добавляем эту строку -->
+    </div>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <script>
+        // Функция для голосования
+        function vote(quoteId, voteType) {
+            fetch(`/vote/${quoteId}/${voteType}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById(`likes-${quoteId}`).textContent = data.likes;
+                    document.getElementById(`dislikes-${quoteId}`).textContent = data.dislikes;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

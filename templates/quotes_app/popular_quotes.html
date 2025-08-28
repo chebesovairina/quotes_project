@@ -1,0 +1,33 @@
+{% extends 'quotes_app/base.html' %}
+
+{% block title %}Популярные цитаты{% endblock %}
+
+{% block content %}
+<div class="quote-container">
+    <h2>🔥 Топ-10 популярных цитат</h2>
+
+    {% if quotes %}
+        {% for quote in quotes %}
+        <div style="margin-bottom: 2rem; padding: 1rem; border-bottom: 1px solid #eee;">
+            <div class="quote-text">"{{ quote.text }}"</div>
+            <div class="quote-source">
+                📚 {{ quote.source.get_type_display }}: {{ quote.source.name }}
+            </div>
+
+            <div class="stats">
+                <div class="votes">
+                    <span>👍 {{ quote.likes_count }}</span>
+                    <span>👎 {{ quote.dislikes_count }}</span>
+                </div>
+
+                <div>
+                    <span>👀 Просмотров: {{ quote.views_count }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="quote-text">Пока нет цитат для отображения.</div>
+    {% endif %}
+</div>
+{% endblock %}

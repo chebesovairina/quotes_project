@@ -1,0 +1,35 @@
+{% extends 'quotes_app/base.html' %}
+
+{% block title %}Случайная цитата{% endblock %}
+
+{% block content %}
+<div class="quote-container">
+    {% if quote %}
+        <div class="quote-text">"{{ quote.text }}"</div>
+        <div class="quote-source">
+            📚 {{ quote.source.get_type_display }}: {{ quote.source.name }}
+        </div>
+
+        <div class="stats">
+            <div class="votes">
+                <button class="btn btn-like" onclick="vote({{ quote.id }}, 'like')">
+                    👍 <span id="likes-{{ quote.id }}">{{ quote.likes_count }}</span>
+                </button>
+                <button class="btn btn-dislike" onclick="vote({{ quote.id }}, 'dislike')">
+                    👎 <span id="dislikes-{{ quote.id }}">{{ quote.dislikes_count }}</span>
+                </button>
+            </div>
+
+            <div>
+                <span>👀 Просмотров: {{ quote.views_count }}</span>
+            </div>
+        </div>
+    {% else %}
+        <div class="quote-text">Пока нет цитат. Будь первым - <a href="{% url 'add_quote' %}">добавь цитату</a>!</div>
+    {% endif %}
+</div>
+
+<div style="text-align: center;">
+    <button class="btn btn-refresh" onclick="location.reload()">🔄 Новая цитата</button>
+</div>
+{% endblock %}

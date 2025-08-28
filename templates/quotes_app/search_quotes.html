@@ -1,0 +1,63 @@
+{% extends 'quotes_app/base.html' %}
+
+{% block title %}Поиск цитат по источнику{% endblock %}
+
+{% block content %}
+<div class="quote-container">
+    <h2>🔍 Поиск цитат по источнику</h2>
+
+    <form method="get" action="{% url 'search_quotes' %}" style="margin-bottom: 2rem;">
+        <div style="display: flex; gap: 1rem; align-items: end;">
+            <div style="flex: 1;">
+                <label><strong>Выберите источник:</strong></label>
+                <select name="source_id" style="width: 100%; padding: 0.5rem; font-size: 1rem;">
+                    <option value="">-- Все источники --</option>
+                    {% for source in sources %}
+                    <option value="{{ source.id }}" {% if selected_source and selected_source.id == source.id %}selected{% endif %}>
+                        {{ source.get_type_display }}: {{ source.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-refresh" style="padding: 0.5rem 1rem;">
+                🔎 Найти
+            </button>
+        </div>
+    </form>
+
+    {% if quotes %}
+        <h3>
+            {% if selected_source %}
+                Цитаты из "{{ selected_source.get_type_display }}: {{ selected_source.name }}"
+                <span style="font-size: 0.9rem; color: #666;">({{ quotes.count }})</span>
+            {% else %}
+                Все цитаты
+            {% endif %}
+        </h3>
+
+        {% for quote in quotes %}
+        <div style="margin-bottom: 2rem; padding: 1.5rem; border: 1px solid #ddd; border-radius: 8px; background: white;">
+            <div class="quote-text">"{{ quote.text }}"</div>
+
+            <div class="stats" style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                <div class="votes" style="display: flex; gap: 1rem;">
+                    <span style="color: #4CAF50;">👍 {{ quote.likes_count }}</span>
+                    <span style="color: #f44336;">👎 {{ quote.dislikes_count }}</span>
+                </div>
+
+                <div style="display: flex; gap: 1rem; color: #666; font-size: 0.9rem;">
+                    <span>👀 {{ quote.views_count }}</span>
+                    <span>📅 {{ quote.created_at|date:"d.m.Y" }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    {% elif request.GET.source_id %}
+        <div style="text-align: center; padding: 2rem; color: #666;">
+            <p>📭 Цитаты для выбранного источника не найдены</p>
+            <p><a href="{% url 'add_quote' %}">Добавьте первую цитату</a></p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

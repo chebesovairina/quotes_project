@@ -1,0 +1,57 @@
+{% extends 'quotes_app/base.html' %}
+
+{% block title %}Добавить цитату{% endblock %}
+
+{% block content %}
+<div class="quote-container">
+    <h2>➕ Добавить новую цитату</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div style="margin-bottom: 1rem;">
+            <label><strong>{{ form.text.label }}:</strong></label>
+            {{ form.text }}
+            {% if form.text.errors %}
+                <div style="color: red; margin-top: 5px;">{{ form.text.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+            <label><strong>{{ form.source_type.label }}:</strong></label>
+            {{ form.source_type }}
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+            <label><strong>{{ form.source_name.label }}:</strong></label>
+            {{ form.source_name }}
+            {% if form.source_name.errors %}
+                <div style="color: red; margin-top: 5px;">{{ form.source_name.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+            <label><strong>{{ form.weight.label }}:</strong></label>
+            {{ form.weight }}
+            <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+                {{ form.weight.help_text }}
+            </div>
+            {% if form.weight.errors %}
+                <div style="color: red; margin-top: 5px;">{{ form.weight.errors }}</div>
+            {% endif %}
+        </div>
+
+        {% if form.non_field_errors %}
+            <div style="color: red; margin-bottom: 1rem;">
+                {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-refresh" style="padding: 10px 20px; font-size: 1.1rem;">
+            ✅ Добавить цитату
+        </button>
+    </form>
+</div>
+{% endblock %}
